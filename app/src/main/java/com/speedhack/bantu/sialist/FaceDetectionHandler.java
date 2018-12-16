@@ -3,14 +3,30 @@ package com.speedhack.bantu.sialist;
 
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.microsoft.projectoxford.face.FaceServiceClient;
 import com.microsoft.projectoxford.face.FaceServiceRestClient;
+import com.microsoft.projectoxford.face.contract.AddPersistedFaceResult;
 import com.microsoft.projectoxford.face.contract.Face;
+import com.microsoft.projectoxford.face.contract.Person;
+import com.microsoft.projectoxford.face.contract.PersonFace;
+import com.microsoft.projectoxford.face.contract.VerifyResult;
+import com.microsoft.projectoxford.face.rest.ClientException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.ConnectException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -28,11 +44,38 @@ public class FaceDetectionHandler {
 
     }
 
-    public boolean compareIdentity(){
+    public String getIdIdentity(final Bitmap image)throws InterruptedException,ConnectException,ExecutionException{
+        UUID uuid = getFaceUUID(image);
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("Person");
+        final ArrayList<String> items = new ArrayList<>();
+        String result = "";
+
+        database.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    items.add(postSnapshot.getValue().toString());
+                    System.out.println(postSnapshot.getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        for(String id : items){
+            if(isFaceIdentical(uuid,UUID.fromString(id))){
+                result = id;
+                break;
+            }
+        }
+        return result;
 
     }
 
-    private UUID getFaceUUID(final Bitmap image){
+    public UUID getFaceUUID(final Bitmap image){
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         final UUID str_result;
         image.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
@@ -96,4 +139,49 @@ public class FaceDetectionHandler {
             return null;
         }
     }
+
+    private boolean isFaceIdentical(final UUID uuid1, final UUID uuid2)throws InterruptedException,ConnectException,ExecutionException{
+        boolean retrunVal;
+        AsyncTask<Void, String, Boolean> compareTask = new AsyncTask<Void, String, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... inputStreams) {
+                try {
+                    VerifyResult result = faceServiceClient.verify(uuid1,uuid2);
+                    return result.isIdentical;
+                } catch (ClientException e) {
+                    e.printStackTrace();
+                    return false;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            };
+        };
+
+        compareTask.execute();
+        retrunVal = compareTask.get();
+        return retrunVal;
+    }
+
+
+/*
+    private PersonFace getFaceRectangle(final UUID imageUUID){
+        Person person = new Person();
+        person.
+        AsyncTask<Void,String,PersonFace> personAdder = new AsyncTask<Void, String, PersonFace>() {
+            @Override
+            protected PersonFace doInBackground(Void... voids) {
+                faceServiceClient.
+            }
+        }
+    }
+
+    private void addPersonID(final UUID imageUUID){
+        AsyncTask<Void,String,UUID> personAdder = new AsyncTask<Void, String, UUID>() {
+            @Override
+            protected UUID doInBackground(Void... voids) {
+                AddPersistedFaceResult result = faceServiceClient.addPersonFace(s)
+            }
+        }
+    }*/
 }
