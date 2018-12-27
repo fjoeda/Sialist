@@ -51,7 +51,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="23dp"
                 android:id="@+id/namaUser"
-                android:text="hahahasa"/>
+                android:text="..."
+                android:textSize="14dp"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -61,7 +62,7 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/prompt_password"
+                    android:hint="Password"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"

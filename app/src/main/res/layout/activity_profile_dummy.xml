@@ -1,9 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ProfileDummyActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/faceImage"
+            android:layout_width="match_parent"
+            android:layout_height="161dp"
+            android:layout_gravity="center"
+            android:contentDescription="Image with faces to analyze"
+            android:maxHeight="140dp"
+            android:src="@drawable/fatur" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:id="@+id/namaUser"
+            android:layout_gravity="center"
+            android:text="Faturahman Yudanto"
+            android:textSize="21dp"
+            android:layout_marginBottom="10dp"
+            android:textAlignment="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:id="@+id/following"
+            android:layout_gravity="center"
+
+            android:text="Follower : 0 | Following = 2"
+            android:textSize="14dp"
+            android:layout_marginBottom="10dp"
+
+            android:textAlignment="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:id="@+id/genders"
+            android:layout_gravity="center"
+
+            android:text="laki-laki"
+            android:textSize="14dp"
+            android:layout_marginBottom="10dp"
+
+            android:textAlignment="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:id="@+id/emailText"
+            android:layout_gravity="center"
+
+            android:text="f.yudanto@gmail.com"
+            android:textSize="14dp"
+            android:layout_marginBottom="10dp"
+
+            android:textAlignment="center"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="23dp"
+            android:id="@+id/nomorHP"
+            android:layout_gravity="center"
+
+            android:text="082323579174"
+            android:textSize="14dp"
+            android:layout_marginBottom="10dp"
+
+            android:textAlignment="center"/>
+
+        <Button
+            android:id="@+id/dummy_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Customize Profile"
+            android:textStyle="bold" />
+
+
+
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/scanPersonButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="14dp"
+        android:text="Scan People"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>

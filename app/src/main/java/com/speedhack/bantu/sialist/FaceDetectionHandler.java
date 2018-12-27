@@ -39,6 +39,7 @@ public class FaceDetectionHandler {
 
     private final FaceServiceClient faceServiceClient =
             new FaceServiceRestClient(apiEndpoint, subscriptionKey);
+    private ArrayList<String> items = new ArrayList<>();
 
     public FaceDetectionHandler(){
 
@@ -46,16 +47,21 @@ public class FaceDetectionHandler {
 
     public String getIdIdentity(final Bitmap image)throws InterruptedException,ConnectException,ExecutionException{
         UUID uuid = getFaceUUID(image);
+        System.out.println(uuid);
         DatabaseReference database = FirebaseDatabase.getInstance().getReference("Person");
-        final ArrayList<String> items = new ArrayList<>();
-        String result = "";
+        items.clear();
+        String result = "tese";
 
-        database.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query query = database.orderByKey();
+
+
+        ValueEventListener listener = new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    items.add(postSnapshot.getValue().toString());
-                    System.out.println(postSnapshot.getValue().toString());
+                    addStringToItems(postSnapshot.getKey());
+                    System.out.println(postSnapshot.getKey());
                 }
             }
 
@@ -63,16 +69,27 @@ public class FaceDetectionHandler {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
+        };
+
+        query.addListenerForSingleValueEvent(listener);
+
+        System.out.println(items.size());
 
         for(String id : items){
-            if(isFaceIdentical(uuid,UUID.fromString(id))){
+            UUID uuid2 = UUID.fromString(id);
+            System.out.println(uuid2);
+            if(isFaceIdentical(uuid,uuid2)){
                 result = id;
                 break;
             }
         }
+        System.out.println(result);
         return result;
 
+    }
+
+    private void addStringToItems(String item){
+        items.add(item);
     }
 
     public UUID getFaceUUID(final Bitmap image){
@@ -140,7 +157,7 @@ public class FaceDetectionHandler {
         }
     }
 
-    private boolean isFaceIdentical(final UUID uuid1, final UUID uuid2)throws InterruptedException,ConnectException,ExecutionException{
+    public boolean isFaceIdentical(final UUID uuid1, final UUID uuid2)throws InterruptedException,ConnectException,ExecutionException{
         boolean retrunVal;
         AsyncTask<Void, String, Boolean> compareTask = new AsyncTask<Void, String, Boolean>() {
             @Override
